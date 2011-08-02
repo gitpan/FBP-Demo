@@ -5,21 +5,24 @@ use strict;
 use warnings;
 use Wx ':everything';
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Wx::App';
+
+sub run {
+	shift->new(@_)->MainLoop;
+}
 
 sub OnInit {
 	my $self = shift;
 
-	# Set the application name
-	$self->SetAppName('FBP Demonstration Application');
-
-	# Create the main window
+	# Create the primary frame
 	require FBP::Demo::Frame::Main;
-	$self->SetTopWindow(
-		FBP::Demo::Frame::Main->new
-	);
-	$self->GetTopWindow->Show(1);
+	$self->SetTopWindow( FBP::Demo::Frame::Main->new );
+
+	# Don't flash frames on the screen in tests
+	unless ( $ENV{HARNESS_ACTIVE} ) {
+		$self->GetTopWindow->Show(1);
+	}
 
 	return 1;
 }
